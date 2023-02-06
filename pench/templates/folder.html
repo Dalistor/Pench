@@ -1,0 +1,155 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block location %}{{ this_folder.id }}{% endblock %}
+
+{% block buttons %}
+<button type="button" id="deleteFolderButton">Deletar pasta</button>
+
+<script>
+	$('#deleteFolderButton').on('click', ()=> {
+		if (confirm('Esta pasta será deletada, tem certeza?')) {
+			$(location).attr('href', '/deleteFolder/{{this_folder.id}}')
+		}
+	})
+</script>
+{% endblock%}
+
+{% block files %}
+
+
+<div class="files">
+	<h1>Arquivos</h1>
+
+	<div class="files-content">
+		{% if files %}
+
+		{% for file in files %}
+		<div class="folder" id="{{file.id}}">
+			<h2>{{file.name}}</h2>
+
+			<div class="folder-actions">
+				<a href="/downloadFile/{{file.id}}">Baixar</a>
+				<a href="#" id="deleteFile_{{file.id}}">Deletar</a>
+
+				<script type="text/javascript">
+					$('#deleteFile_{{file.id}}').on('click', (ev)=> {
+						ev.preventDefault()
+
+						deleteFileDOM({{file.id}})
+					})
+				</script>
+			</div>
+		</div>
+		{% endfor %}
+
+		{% else %}
+		<h2 class="h2file">Não há arquivos aqui</h2>
+		{% endif %}
+	</div>
+
+	<script type="text/javascript">
+		function deleteFileDOM (id) {
+			if (confirm('Esse arquivo será excluído, quer prosseguir?')) {
+
+				$.ajax({
+					url: '/deleteFile/' + id,
+					type: 'GET',
+					success: ()=> {
+						$('#' + id).remove()
+					}
+				})
+			}
+		}
+	</script>
+
+	<div class="dragFiles">
+		<div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+			{% csrf_token %}
+		  	<p>Arraste seus arquivos aqui</p>
+		</div>
+
+		<div class="progressBar">
+			<progress value="0" max="100" id="progressBar"></progress>
+			<p id="percentageBar"></p>
+		</div>
+
+		<script>
+			$('#inputFile').on('change', ()=> {
+				console.log($('#inputFile').val())
+			})
+
+			function dropHandler(ev) {
+				ev.preventDefault();
+
+				if (ev.dataTransfer.items) {
+			      	if (ev.dataTransfer.items[0].kind === 'file') {
+			        	var file = ev.dataTransfer.items[0].getAsFile()
+
+
+			        	let formData = new FormData()
+						formData.append('file', file)
+						formData.append('name', file.name)
+						formData.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val())
+
+			        	$.ajax({
+			        		xhr: function() {
+							    var xhr = new window.XMLHttpRequest();
+
+							    xhr.upload.addEventListener("progress", function(evt) {
+							      if (evt.lengthComputable) {
+							        var percentComplete = evt.loaded / evt.total;
+							        percentComplete = parseInt(percentComplete * 100);
+							        
+							        $('#progressBar').attr('value', percentComplete)
+							        $('#percentageBar').text(percentComplete + '%')
+
+							      }
+							    }, false);
+
+							    return xhr;
+							  },
+							url:'/uploadFile/{{this_folder.id}}',
+							type:'POST',
+							data: formData,
+							processData: false,
+				            contentType: false,
+				            success: (response)=> {
+				            	//adicionar DOM
+				            	const temp = '<div class="folder" id="' + response.id + '">' + '\n' +
+									'<h2>' + file.name + '</h2>' + '\n' +
+
+									'<div class="folder-actions">' + '\n' +
+									'<a href="/downloadFile/' + response.id + '">Baixar</a>' + '\n' +
+									'<a href="#" id="deleteFile_' + response.id + '">Deletar</a>' + '\n' +	
+									'</div>' + '\n' +
+								'</div>'
+
+								$('.h2file').css('display', 'none')
+				            	$('.files-content').append(temp)
+
+				            	$('#deleteFile_' + response.id).on('click', (ev)=> {
+									ev.preventDefault()
+
+									deleteFileDOM(response.id)
+								})
+
+								//resetar progressbar
+								$('#progressBar').attr('value', 0)
+							    $('#percentageBar').text(null)
+				            }
+						})
+			      	}
+
+				}
+			}
+
+			function dragOverHandler(ev) {
+			  	ev.preventDefault()
+			}
+		</script>
+	</div>
+</div>
+{% endblock %}
+
