@@ -15,7 +15,9 @@
 </head>
 <body>
 	<header>
-		<a href="/logout/">Logout</a>
+		{% block past_folder %}
+		{% endblock %}
+		<a href="/logout/" class="logout">Logout</a>
 		<div class="manager">
 
 			<div class="buttons">

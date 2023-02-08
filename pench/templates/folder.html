@@ -2,6 +2,17 @@
 
 {% load static %}
 
+{% block past_folder %}
+<div class="past_folder">
+	{% if this_folder.location %}
+	<a href="/folder/{{this_folder.location.id}}"><<</a>
+	{% else %}
+	<a href="/folder/0"><<</a>
+	{% endif %}
+	<h2>{{this_folder.name}}</h2>
+</div>
+{% endblock %}
+
 {% block location %}{{ this_folder.id }}{% endblock %}
 
 {% block buttons %}

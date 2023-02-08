@@ -121,13 +121,17 @@ def viewHome (request):
 def viewFolder (request, location):
 	if request.user.is_authenticated == False:
 		return redirect('/')
+		
+	try:
+		folders = Folder.objects.filter(location=location)
+		files = File.objects.filter(location=location)
+		thisFolder = Folder.objects.get(pk=location)
 
-	folders = Folder.objects.filter(location=location)
-	files = File.objects.filter(location=location)
-	thisFolder = Folder.objects.get(pk=location)
-
-	return render(request, 'folder.html', {
-		'this_folder': thisFolder,
-		'folders': folders,
-		'files': files
-	})
+		return render(request, 'folder.html', {
+			'this_folder': thisFolder,
+			'folders': folders,
+			'files': files
+		})
+		
+	except Exception as e:
+		return redirect('/home/')

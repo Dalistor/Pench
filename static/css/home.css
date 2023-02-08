@@ -10,12 +10,40 @@ header {
     border-bottom: solid black 2px;
 }
 
-header a {
+.logout {
     text-decoration: none;
     color: black;
     position: absolute;
     right: 20px;
     top: 1.4rem;
+}
+
+.past_folder {
+    position: absolute;
+    left: 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: x-large;
+    align-items: center;
+    border: solid;
+    padding: 2px;
+}
+
+.past_folder a {
+    text-decoration: none;
+    color: black;
+    border-right: solid;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.past_folder h2 {
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 130px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .manager {
