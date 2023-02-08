@@ -6,6 +6,8 @@ urlpatterns = [
 	path('home/', views.viewHome, name='home'),
 	path('folder/<int:location>', views.viewFolder, name='folder'),
 
+	path('logout/', views.exit, name='exit'),
+
 	path('createFolder/<int:location>', views.createFolder, name='createFolder'),
 	path('deleteFolder/<int:pk>', views.deleteFolder, name='deleteFolder'),
 

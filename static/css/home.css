@@ -10,6 +10,14 @@ header {
     border-bottom: solid black 2px;
 }
 
+header a {
+    text-decoration: none;
+    color: black;
+    position: absolute;
+    right: 20px;
+    top: 1.4rem;
+}
+
 .manager {
     display: flex;
     flex-direction: column;

@@ -15,7 +15,7 @@ import os
 
 def createFolder (request, location):
 	if request.user.is_authenticated == False:
-		return redirect('')
+		return redirect('/')
 
 	folder = Folder()
 
@@ -35,19 +35,29 @@ def createFolder (request, location):
 
 def deleteFolder (request, pk):
 	if request.user.is_authenticated == False:
-		return redirect('')
+		return redirect('/')
 
 	folder = Folder.objects.get(pk=pk)
 
+	try:
+		returnLocate = '/folder/' + str(folder.location.id)
+	except Exception as e:
+		returnLocate = '/home/'
+
+
 	folder.delete()
 
-	return redirect('/home/')
+	return redirect(returnLocate)
+
+def exit (request):
+	logout(request)
+	return redirect('/')
 
 #arquivos
 
 def uploadFile (request, location):
 	if request.user.is_authenticated == False:
-		return redirect('')
+		return redirect('/')
 
 	folderFile = Folder.objects.get(pk=location)
 
@@ -64,7 +74,7 @@ def deleteFile (request, pk):
 	_file = File.objects.get(pk=pk)
 	_file.delete()
 
-	return HttpResponse('200')
+	pass
 
 def downloadFile (request, pk):
 	_file = File.objects.get(pk=pk)
@@ -100,7 +110,7 @@ def viewLogin (request):
 
 def viewHome (request):
 	if request.user.is_authenticated == False:
-		return redirect('')
+		return redirect('/')
 
 	folders = Folder.objects.filter(location=None)
 
@@ -110,7 +120,7 @@ def viewHome (request):
 
 def viewFolder (request, location):
 	if request.user.is_authenticated == False:
-		return redirect('')
+		return redirect('/')
 
 	folders = Folder.objects.filter(location=location)
 	files = File.objects.filter(location=location)

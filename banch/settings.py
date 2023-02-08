@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'banch.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pench',
-        'USER': 'postgres',
-        'PASSWORD': 'diego070',
+        'USER': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost'
     }
 }
