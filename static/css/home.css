@@ -99,10 +99,12 @@ header {
 
 .files-content::-webkit-scrollbar {
     background-color: transparent;
+    display: none;
 }
 
 .folders-content::-webkit-scrollbar {
     background-color: transparent;
+    display: none;
 }
 
 .folders-content h2, .files-content h2 {
@@ -120,6 +122,14 @@ header {
     color: black;
     text-decoration: none;
     margin: 1rem;
+}
+
+#fileInput[type="file"] {
+    display: none;
+}
+
+.dragFiles label {
+    padding: 8%;
 }
 
 .folder-actions {
@@ -185,4 +195,26 @@ progress::-webkit-progress-value {
 }
 progress::-moz-progress-bar {
   /* style rules */
+}
+
+@media screen and (max-width:600px){
+    header {
+        justify-content: start;
+    }
+
+    .past_folder {
+        display: none;
+    }
+
+    .dragFiles label {
+        padding: 10%;
+    }
+
+    #drop_zone {
+        width: 80vw;
+    }
+
+    .progressBar progress {
+        width: 70vw;
+    }
 }

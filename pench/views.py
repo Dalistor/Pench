@@ -76,7 +76,7 @@ def deleteFile (request, pk):
 	_file = File.objects.get(pk=pk)
 	_file.delete()
 
-	pass
+	return HttpResponse('200')
 
 def downloadFile (request, pk):
 	_file = File.objects.get(pk=pk)
