@@ -130,6 +130,7 @@ header {
 
 .dragFiles label {
     padding: 8%;
+    cursor: pointer;
 }
 
 .folder-actions {
