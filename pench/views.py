@@ -26,11 +26,13 @@ def createFolder (request, location):
 		folder.location = thisFolder
 
 		folder.save()
-		return redirect('/folder/' + str(location))
+		folder_list = Folder.objects.filter(pk=folder.id)
+		return JsonResponse({'folder': list(folder_list.values())})
 
 	else:
 		folder.save()
-		return redirect('/home/')
+		folder_list = Folder.objects.filter(pk=folder.id)
+		return JsonResponse({'folder': list(folder_list.values())})
 
 
 def deleteFolder (request, pk):
@@ -132,6 +134,6 @@ def viewFolder (request, location):
 			'folders': folders,
 			'files': files
 		})
-		
+
 	except Exception as e:
 		return redirect('/home/')

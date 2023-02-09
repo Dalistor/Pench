@@ -32,38 +32,76 @@
 				<div class="popup">
 					<div class="popup-close">X</div>
 					<div class="popup-content">
-						{% block popup %}
-						<form method="POST" action="/createFolder/{% block location %}0{% endblock %}">
 							{% csrf_token %}
 
 							<div>
 								<input type="text" maxlength="50" required placeholder="Nome" id="name" name="name">
 							</div>
 
-							<input type="submit" value="Salvar">
-						</form>
-						{% endblock %}
+							<input type="submit" value="Salvar" class="submit">
+
+						<script type="text/javascript">
+							$('#name').on('keypress', (e)=> {
+								if (e.which == 13) {
+									$('.submit').trigger('click')
+								}
+							})
+
+							$('.submit').on('click', ()=> {
+								if ($('#name').val() == '') {
+									alert('Insira o nome da pasta')
+
+									return
+								}
+
+								$.ajax({
+									url: '/createFolder/{% block location %}0{% endblock %}',
+									type: 'POST',
+									data: {
+										'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+										'name': $('#name').val()
+									},
+									success: (response)=> {
+										const temp = '<a class="folder" href="/folder/' + response.folder[0].id + '">' + '\n' +
+											'<h2>' + response.folder[0].name + '</h2>' + '\n' +
+											'</a>'
+
+										$('.h2folder').css('display', 'none')
+										$('.folders-content').append(temp)
+
+										popupClose(true)
+									}
+								})
+							})
+						</script>
 					</div>
 				</div>
 			</div>
 
 			<script>
 				$('#newFolderButton').on('click', popupOpen)
-				$('.popup-wrapper').on('click', popupClose)
+				$('.popup-wrapper').on('click', ()=> {popupClose(false)})
 
 				function popupOpen () {
 					$('.popup-wrapper').css('display', 'block')
+
 				}
 
-				function popupClose () {
+				function popupClose (enterPress) {
+					if (enterPress) {
+						$('.popup-wrapper').css('display', 'none')
+						clearInputs()
+
+						return
+					}
+
 					const classOfClikedElement = event.target.classList[0]
-					const classNames = ['popup-close', 'popup-wrapper']
+					const classNames = ['popup-close', 'popup-wrapper', 'submit']
 
 					const shouldClosePopup = classNames.some(className => className == classOfClikedElement)
 
 					if (shouldClosePopup) {
 						$('.popup-wrapper').css('display', 'none')
-
 						clearInputs()
 					}
 				}
@@ -90,7 +128,7 @@
 				{% endfor %}
 
 				{% else %}
-				<h2>Não há pastas aqui</h2>
+				<h2 class="h2folder">Não há pastas aqui</h2>
 				{% endif %}
 			</div>
 		</div>
